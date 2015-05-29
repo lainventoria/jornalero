@@ -1,0 +1,135 @@
+<div class="row">
+  <div class="col-sm-12 text-center">
+    <%= link_to 'prev', root_path(fecha: (@lunes - 1.week).to_s(:url)) %>
+    <strong><%= @lunes.to_s(:argentina) %></strong>
+    <%= link_to 'prox', root_path(fecha: (@lunes + 1.week).to_s(:url)) %>
+  </div>
+</div>
+<div class="row">
+  <% (0..3).each do |hora|
+    hora = (hora * 6 + 6) % 24 %>
+    <span class="hora-label"><%= hora %></span>
+  <% end %>
+</div>
+<div id="calendario">
+  <% (0..6).each do |dia|
+    dia = @lunes + dia.days + 6.hours %>
+    <div class="dia row" id="dia-<%= dia.to_s(:db) %>" data-fecha="<%= dia.to_s(:db) %>">
+      <div class="tag_dia"><%= fecha_corta(dia) %></div>
+      <% (0..(24 * 3 -1)).each do |lapso|
+        d = desde(dia, lapso)
+        h = hasta(dia, lapso)
+        t = @tareas.entre(d, h)
+        if t.any? %>
+          <div class="lapso activo"
+            data-desde="<%= d.to_s(:db) %>"
+            data-hasta="<%= h.to_s(:db) %>"
+            data-proyecto="<%= t.first.proyecto %>"
+            data-descripcion="<%= t.first.descripcion %>"><div class="proyecto"></div><div class="tarea"></div></div>
+        <% else %>
+          <div class="lapso"
+            data-desde="<%= d.to_s(:db) %>"
+            data-hasta="<%= h.to_s(:db) %>">
+            <div class="proyecto"></div>
+            <div class="tarea"></div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+var tareas = <%= raw @tareas.to_json %>;
+var lunes = parseDate(<%= raw @lunes.to_json %>);
+var calendario = $('#calendario');
+
+function parseDate(input) {
+  var parts = input.match(/(\d+)/g);
+  return new Date(parts[0], parts[1]-1, parts[2]);
+}
+
+function dateToS(date) {
+  m = date.getMonth() + 1;
+  return date.getFullYear() + '-' + m + '-' + date.getDate();
+}
+
+function dateToShort(date) {
+  m = date.getMonth() + 1;
+  return DOW(date) + ' ' + date.getDate();
+}
+
+function DOW(date) {
+  s = ['D','L','M','X','J','V','S'];
+  return s[date.getDay()];
+}
+
+function addMinutes(date, minutes) {
+  hours = Math.floor(minutes / 60);
+  minutes = minutes % 60;
+  date.setHours(date.getHours() + hours);
+  date.setMinutes(date.getMinutes() + minutes);
+  return date
+}
+
+function cargar_datos_de_vecino(lapso) {
+}
+
+function hash_a_color(hash) {
+  hash = hash.toString(CryptoJS.enc.Hex);
+  color = '#';
+  componentes = [ parseInt(hash.substr(0,2),16), parseInt(hash.substr(2,2),16), parseInt(hash.substr(4,2),16) ];
+  max = Math.max(componentes);
+  if ( max < 40 ) {
+    componentes[componentes.indexOf(max)] = max * 4;
+  }
+  return "rgb("+componentes[0]+","+componentes[1]+","+componentes[2]+")";
+}
+
+function texto_a_color(texto) {
+  return hash_a_color(CryptoJS.MD5(texto));
+}
+
+function colorear(lapso) {
+  if ( tiene_datos(lapso) ) {
+    lapso.children('.proyecto').css('background-color', texto_a_color(lapso.data('proyecto')));
+    lapso.children('.tarea').css('background-color', texto_a_color(lapso.data('descripcion')));
+  }
+}
+
+function tiene_datos(lapso) {
+  return typeof(lapso.data('proyecto')) !== 'undefined';
+}
+
+function activar(lapso) {
+  if ( ! lapso.hasClass('activo') ) {
+    lapso.addClass('activo');
+  }
+
+  if ( ! tiene_datos(lapso)  ) {
+    cargar_datos_de_vecino(lapso);
+  }
+
+  colorear(lapso);
+}
+
+$('.lapso, .proyecto, .tarea').on('click', function(e) {
+  $t = $(e.target);
+  if ( $t.hasClass('tarea') || $t.hasClass('proyecto') ) {
+    $t = $t.parent();
+  }
+  activar($t);
+});
+
+var ready;
+ready = function() {
+  $('.lapso.activo').map(function(){
+    $this = $(this);
+    activar($this);
+  });
+
+}
+
+$(document).ready(ready);
+$(document).on('page:load', ready);
+</script>

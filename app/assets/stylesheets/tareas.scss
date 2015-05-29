@@ -1,0 +1,51 @@
+// Place all the styles related to the tareas controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+#calendario { font-size:0; line-height: 0;  }
+
+.hora-label:first-of-type { margin-left: 2.7%; }
+
+.hora-label { display:inline-block; width:23.2%; font-weight: bold; font-size: 13px; }
+
+.lapso {
+  width: 1.351%;
+  height: 40px;
+  background: #fcfcfc;
+  border: 0;
+  border-right: 0.5px solid #e8f8f8;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.lapso.activo {
+  cursor: text;
+  background-color: #e0f0f6;
+}
+
+.proyecto { height: 20px; }
+.tarea { height: 20px; }
+
+.tag_dia {
+  width: 1.7%;
+  height: 40px;
+  display: block;
+  background-color: #ff4500;
+  color: white;
+  float: left;
+  font-weight: bold;
+  text-align: center;
+  padding: 1px;
+  padding-top: 5px;
+  font-size: 13px;
+  line-height: 15px;
+}
+
+
+.dia {
+  margin: 0;
+  border-bottom: 0.5px solid #e8f8f8;
+}
+
+.dia .lapso:nth-child(3n+1) { border-right: 1px solid #e0f0f0; }
+.dia .lapso:nth-child(9n+1) { border-right: 2px solid #ceeeee; }
