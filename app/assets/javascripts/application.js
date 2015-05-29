@@ -19,3 +19,4 @@
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
 //= require awesome_nested_fields
 //= require md5
+//= require tareas
