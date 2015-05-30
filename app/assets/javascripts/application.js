@@ -22,3 +22,4 @@
 //= require awesome_nested_fields
 //= require md5
 //= require tareas
+//= require el

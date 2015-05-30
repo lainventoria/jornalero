@@ -39,26 +39,29 @@
   <% end %>
 </div>
 
+<div class="col-md-4" id="tarea-form-wrapper">
 <%= form_for @tarea, html: { id: 'tarea-form' } do |f| %>
+<div id="diferentes_tareas">
 <% @diferentes_tareas.each do |t| %>
-  <a href="" class="tarea-btn label" data-descripcion="<%= t.descripcion %>" data-proyecto="<%= t.proyecto.nombre %>" /><%= t.descripcion %></a>
+  <span class="tarea-btn label" data-descripcion="<%= t.first %>" data-proyecto="<%= t.last %>" /><%= t.first %></span>
 <% end %>
+</div>
 <h4> Nueva Tarea </h4>
 <%=   f.label 'Proyecto' %>
 <% @proyectos.each do |p| %>
-  <%= raw("<a href=\"\" class=\"proyecto-btn label\" data-proyecto=\"#{p.nombre}\" />#{p.nombre}</a>") %>
+  <%= raw("<span class=\"proyecto-btn label\" data-proyecto=\"#{p.nombre}\" />#{p.nombre}</span>") %>
 <% end %>
 <%=   f.autocomplete_field :proyecto, autocomplete_proyecto_nombre_proyectos_path, class: 'form-control'  %>
 <%=   f.label 'Descripcion' %>
-<%=   f.text_field :descripcion, class: 'form-control'  %>
+<%=   f.text_field :descripcion, class: 'form-control' %>
 
 <%=   f.submit 'Guardar', class: "btn btn-primary btn-lg" %>
 <% end %>
+</div>
 
 <script>
-var tareas = <%= raw @tareas.to_json %>;
+var diferentes_tareas = <%= raw @diferentes_tareas.to_json %>;
 var lunes = parseDate(<%= raw @lunes.to_json %>);
-var calendario = $('#calendario');
 
 function parseDate(input) {
   var parts = input.match(/(\d+)/g);

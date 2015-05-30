@@ -50,6 +50,15 @@
 .dia .lapso:nth-child(3n+1) { border-right: 1px solid #e0f0f0; }
 .dia .lapso:nth-child(9n+1) { border-right: 2px solid #ceeeee; }
 
-#tarea-form { display:none; }
+#tarea-form-wrapper {
+  display:none;
+  position: absolute; top: 130px; left: 33.333%;
+  border-radius: 13px; padding:13px;
+  background-color: white; border: 1px solid #e8f8f8;
+  -webkit-box-shadow: 18px 18px 26px -10px rgba(0,0,0,0.33);
+  -moz-box-shadow: 18px 18px 26px -10px rgba(0,0,0,0.33);
+  box-shadow: 18px 18px 26px -10px rgba(0,0,0,0.33);
+}
 
-.tarea-btn, .proyecto-btn { border: 2px solid #e0f0f6; }
+.tarea-btn, .proyecto-btn { border: 2px solid #e0f0f6; cursor: pointer; }
+.tarea-btn { display: block; margin: 1px; }

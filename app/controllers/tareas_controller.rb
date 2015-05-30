@@ -4,7 +4,7 @@ class TareasController < ApplicationController
     @lunes = traer_lunes
     @tareas = current_usuario.tareas.semana @lunes
     @proyectos = Proyecto.ultimo_mes
-    @diferentes_tareas = current_usuario.tareas.mes(@lunes).distinct
+    @diferentes_tareas = current_usuario.tareas.mes(@lunes).distinct.pluck(:descripcion, "proyectos.nombre")
     @tarea = Tarea.new
   end
 
