@@ -3,6 +3,9 @@ class TareasController < ApplicationController
   def index
     @lunes = traer_lunes
     @tareas = current_usuario.tareas.semana @lunes
+    @proyectos = Proyecto.ultimo_mes
+    @diferentes_tareas = current_usuario.tareas.mes(@lunes).distinct
+    @tarea = Tarea.new
   end
 
   def traer_lunes

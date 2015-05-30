@@ -39,6 +39,22 @@
   <% end %>
 </div>
 
+<%= form_for @tarea, html: { id: 'tarea-form' } do |f| %>
+<% @diferentes_tareas.each do |t| %>
+  <a href="" class="tarea-btn label" data-descripcion="<%= t.descripcion %>" data-proyecto="<%= t.proyecto.nombre %>" /><%= t.descripcion %></a>
+<% end %>
+<h4> Nueva Tarea </h4>
+<%=   f.label 'Proyecto' %>
+<% @proyectos.each do |p| %>
+  <%= raw("<a href=\"\" class=\"proyecto-btn label\" data-proyecto=\"#{p.nombre}\" />#{p.nombre}</a>") %>
+<% end %>
+<%=   f.autocomplete_field :proyecto, autocomplete_proyecto_nombre_proyectos_path, class: 'form-control'  %>
+<%=   f.label 'Descripcion' %>
+<%=   f.text_field :descripcion, class: 'form-control'  %>
+
+<%=   f.submit 'Guardar', class: "btn btn-primary btn-lg" %>
+<% end %>
+
 <script>
 var tareas = <%= raw @tareas.to_json %>;
 var lunes = parseDate(<%= raw @lunes.to_json %>);

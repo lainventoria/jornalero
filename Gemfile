@@ -17,10 +17,12 @@ gem 'coffee-rails'
 gem 'turbolinks'
 gem 'therubyracer'
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 gem 'handlebars_assets'
 gem 'bootstrap-sass-rails'
 gem 'awesome_nested_fields'
 gem 'bootstrap-datepicker-rails'
+gem 'rails4-autocomplete'
 
 # Usuarios
 gem 'devise'

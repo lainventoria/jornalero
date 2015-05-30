@@ -12,6 +12,17 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :proyectos do
+    collection do
+      get :autocomplete_proyecto_nombre
+    end
+  end
+
+  resources :tareas do
+    collection do
+      get :autocomplete_tarea_descripcion
+    end
+  end
 
   # Todas estas acciones necesitan que el deudor se autentique antes
 #  authenticate :deudor do

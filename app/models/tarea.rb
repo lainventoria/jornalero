@@ -3,6 +3,7 @@ class Tarea < ActiveRecord::Base
   belongs_to :usuario
 
   scope :semana, ->(fecha) { where('desde >= ? AND hasta <= ?', fecha, fecha + 1.week + 1.day) }
+  scope :mes, ->(fecha) { where('desde >= ? AND hasta <= ?', fecha - 1.month, fecha + 1.week + 1.day) }
 
   scope :entre, ->(desde, hasta) { where('desde <= ? AND hasta >= ?', desde, hasta) }
 end
