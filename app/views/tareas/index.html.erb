@@ -5,7 +5,7 @@
     <%= link_to raw('prox ' + icon('angle-right')), root_path(fecha: (@lunes + 1.week).to_s(:url)), class: 'btn btn-primary' %>
   </div>
   <div clas="col-sm-4">
-    <span class="btn btn-lg btn-success pull-right" id="tarea-save-button"><%= icon('check-square') %> Guardado</span>
+    <span class="btn btn-lg btn-success pull-right" data-donde="<%= tareas_path('json') %>" id="tarea-save-button"><%= icon('check-square') %> Guardado</span>
   </div>
 </div>
 <div class="row">
@@ -46,19 +46,19 @@
 <%= form_for @tarea, html: { id: 'tarea-form' } do |f| %>
 <div id="diferentes_tareas">
 <% @diferentes_tareas.each do |t| %>
-  <span class="tarea-btn label" data-descripcion="<%= t.first %>" data-proyecto="<%= t.last %>" /><%= t.first %></span>
+  <span class="tarea-label label" data-descripcion="<%= t.first %>" data-proyecto="<%= t.last %>" /><%= t.first %></span>
 <% end %>
 </div>
 <h4> Nueva Tarea </h4>
 <%=   f.label 'Proyecto' %>
 <% @proyectos.each do |p| %>
-  <%= raw("<span class=\"proyecto-btn label\" data-proyecto=\"#{p.nombre}\" />#{p.nombre}</span>") %>
+  <%= raw("<span class=\"proyecto-label label\" data-proyecto=\"#{p.nombre}\" />#{p.nombre}</span>") %>
 <% end %>
 <%=   f.autocomplete_field :proyecto, autocomplete_proyecto_nombre_proyectos_path, class: 'form-control'  %>
 <%=   f.label 'Descripcion' %>
 <%=   f.text_field :descripcion, class: 'form-control' %>
 
-<%=   f.submit 'Guardar', class: "btn btn-primary btn-lg" %>
+<%=   f.submit 'Agregar', class: "btn btn-primary btn-lg" %>
 <% end %>
 </div>
 

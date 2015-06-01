@@ -4,8 +4,21 @@ class TareasController < ApplicationController
     @lunes = traer_lunes
     @tareas = current_usuario.tareas.semana @lunes
     @proyectos = Proyecto.ultimo_mes
-    @diferentes_tareas = current_usuario.tareas.mes(@lunes).distinct.pluck(:descripcion, "proyectos.nombre")
+    @diferentes_tareas = current_usuario.tareas.mes(@lunes).distinct.joins(:proyecto).pluck(:descripcion, "proyectos.nombre")
     @tarea = Tarea.new
+  end
+
+  def create
+    esta_semana.destroy_all
+    params[:tareas].each do |index, tarea|
+      proyecto = Proyecto.find_or_create_by({nombre: tarea[:proyecto]})
+      current_usuario.tareas.create({proyecto: proyecto, descripcion: tarea[:descripcion], desde: tarea[:desde], hasta: tarea[:hasta]})
+    end
+    if esta_semana.count == params[:tareas].count
+      render status: :created, json: esta_semana
+    else
+      render status: :internal_server_error, json: esta_semana
+    end
   end
 
   def traer_lunes
@@ -26,6 +39,10 @@ class TareasController < ApplicationController
   end
 
   def tarea_params
-    params.permit(:fecha)
+    params.permit(:fecha, :tareas, :lunes)
+  end
+
+  def esta_semana
+    current_usuario.tareas.semana(params[:lunes].to_datetime)
   end
 end
