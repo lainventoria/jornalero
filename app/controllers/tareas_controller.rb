@@ -10,11 +10,15 @@ class TareasController < ApplicationController
 
   def create
     esta_semana.destroy_all
-    params[:tareas].each do |index, tarea|
-      proyecto = Proyecto.find_or_create_by({nombre: tarea[:proyecto]})
-      current_usuario.tareas.create({proyecto: proyecto, descripcion: tarea[:descripcion], desde: tarea[:desde], hasta: tarea[:hasta]})
+    unless params[:tareas].nil?
+      params[:tareas].each do |index, tarea|
+        proyecto = Proyecto.find_or_create_by({nombre: tarea[:proyecto]})
+        current_usuario.tareas.create({proyecto: proyecto, descripcion: tarea[:descripcion], desde: tarea[:desde], hasta: tarea[:hasta]})
+      end
     end
-    if esta_semana.count == params[:tareas].count
+
+    cuenta = if params[:tareas].nil? then 0 else params[:tareas].count end
+    if esta_semana.count == cuenta
       render status: :created, json: esta_semana
     else
       render status: :internal_server_error, json: esta_semana

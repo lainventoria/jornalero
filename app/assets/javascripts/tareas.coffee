@@ -197,6 +197,12 @@ ready = () ->
     agregar_tarea(nueva_tarea) if ! result?
     cerrar()
 
+  $('#form-cancel').on 'click', (e) =>
+    e.preventDefault()
+    e.stopPropagation()
+    borrar(tform().data('lapso'))
+    cerrar()
+
   $('#tarea-save-button').on 'click', (e) =>
     $but = $(e.target)
     e.preventDefault()
