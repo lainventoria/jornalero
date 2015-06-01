@@ -1,5 +1,9 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+#
+# Coloreado y cosas de colorear
+#
+
 hash_a_color = (hash) ->
   hash = hash.toString(CryptoJS.enc.Hex)
   componentes = [ parseInt(hash.substr(0,2),16), parseInt(hash.substr(2,2),16), parseInt(hash.substr(4,2),16) ]
@@ -28,6 +32,10 @@ colorear_boton = (boton) ->
       colorear_fondo(boton, boton.data('proyecto'))
     colorear_borde(boton, boton.data('proyecto'))
 
+#
+# Interaccion con lapsos y tareas
+#
+
 tiene_datos = (lapso) ->
   p = lapso.data('proyecto')
   return p?
@@ -48,34 +56,26 @@ cargar_datos_de_vecino = (lapso) ->
         lapso.data('proyecto', l.data('proyecto'))
         lapso.data('descripcion', l.data('descripcion'))
 
-activo = (lapso) ->
-  lapso.hasClass('activo')
+activo = (lapso) -> lapso.hasClass('activo')
 
 activar = (lapso) ->
   lapso.addClass('activo') if !activo(lapso)
   cargar_datos_de_vecino(lapso) if !tiene_datos(lapso)
   colorear_lapso(lapso)
 
-tform = () ->
-  $('#tarea-form')
+tform = () -> $('#tarea-form')
 
-tproyecto = () ->
-  $('#tarea_proyecto')
+tproyecto = () -> $('#tarea_proyecto')
 
-tdescripcion = () ->
-  $('#tarea_descripcion')
+tdescripcion = () -> $('#tarea_descripcion')
 
-hideform = () ->
-  $('#tarea-form-wrapper').hide()
+hideform = () -> $('#tarea-form-wrapper').slideUp(160)
 
-showform = () ->
-  $('#tarea-form-wrapper').show()
+showform = () -> $('#tarea-form-wrapper').slideDown(160)
 
-cargar_proyecto = (proyecto) ->
-  tproyecto().val(proyecto)
+cargar_proyecto = (proyecto) -> tproyecto().val(proyecto)
 
-cargar_descripcion = (descripcion) ->
-  tdescripcion().val(descripcion)
+cargar_descripcion = (descripcion) -> tdescripcion().val(descripcion)
 
 cargar_data = (lapso) ->
   cargar_proyecto(lapso.data('proyecto'))
@@ -92,6 +92,7 @@ borrar = (lapso) ->
   lapso.removeData('proyecto')
   lapso.removeClass('activo')
   lapso.children().css('background-color','transparent')
+  necesita_sincronizar()
 
 cerrar = () ->
   hideform()
@@ -99,9 +100,11 @@ cerrar = () ->
 
 guardar = () ->
   lapso = tform().data('lapso')
-  lapso.data('proyecto', tproyecto().val())
-  lapso.data('descripcion', tdescripcion().val())
-  colorear_lapso(lapso)
+  if lapso.data('proyecto') != tproyecto().val() || lapso.data('descripcion') != tdescripcion().val()
+    lapso.data('proyecto', tproyecto().val())
+    lapso.data('descripcion', tdescripcion().val())
+    colorear_lapso(lapso)
+    necesita_sincronizar()
 
 agregar_tarea = (tarea) ->
   diferentes_tareas.push(tarea)
@@ -113,6 +116,22 @@ agregar_tarea = (tarea) ->
 
   $('#diferentes_tareas').append(elem)
   colorear_boton($('#diferentes_tareas .tarea-btn').last())
+
+necesita_sincronizar = () ->
+  tb = $('#tarea-save-button')
+  tb.removeClass('btn-success').addClass('btn-warning').
+    html('<i class="fa fa-save"></i> Guardar') if tb.hasClass('btn-success')
+
+sincronizar = () ->
+  $('#tarea-save-button').addClass('spining').html('<i class="fa fa-spinner fa-spin"></i> Guardando')
+  setTimeout(sincronizado, 2000)
+
+sincronizado = () ->
+  $('#tarea-save-button').removeClass('spining btn-warning').addClass('btn-success').html('<i class="fa fa-check-square"> Guardado</i>')
+
+#
+# Al iniciar y eventos
+#
 
 ready = () ->
   document.oncontextmenu = () -> false
@@ -126,12 +145,11 @@ ready = () ->
     else
       activar($t)
       editar($t) if !tiene_datos($t)
+      necesita_sincronizar()
 
-  $('.lapso.activo').each (index, elem) =>
-    activar($(elem))
+  $('.lapso.activo').each (index, elem) => activar($(elem))
 
-  $('.tarea-btn').each (index, elem) =>
-    colorear_boton($(elem))
+  $('.tarea-btn').each (index, elem) => colorear_boton($(elem))
 
   $(document).on 'click', '.tarea-btn', (e) =>
     $t = $(e.target)
@@ -139,11 +157,9 @@ ready = () ->
     guardar()
     cerrar()
 
-  $('.proyecto-btn').each (index, elem) =>
-    colorear_boton($(elem))
+  $('.proyecto-btn').each (index, elem) => colorear_boton($(elem))
 
-  $(document).on 'click', '.proyecto-btn', (e) =>
-    cargar_proyecto($(e.target).data('proyecto'))
+  $(document).on 'click', '.proyecto-btn', (e) => cargar_proyecto($(e.target).data('proyecto'))
 
   tform().on 'submit', (e) =>
     e.preventDefault()
@@ -153,6 +169,12 @@ ready = () ->
     result = tarea for tarea in diferentes_tareas when tarea[0] == nueva_tarea[0] && tarea[1] == nueva_tarea[1]
     agregar_tarea(nueva_tarea) if ! result?
     cerrar()
+
+  $('#tarea-save-button').on 'click', (e) =>
+    $but = $(e.target)
+    e.preventDefault()
+    if $but.hasClass('btn-warning') && !$but.hasClass('spining')
+      sincronizar()
 
 $(document).ready(ready);
 $(document).on('page:load', ready);

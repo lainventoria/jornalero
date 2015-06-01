@@ -1,8 +1,11 @@
 <div class="row">
-  <div class="col-sm-12 text-center">
-    <%= link_to 'prev', root_path(fecha: (@lunes - 1.week).to_s(:url)) %>
-    <strong><%= @lunes.to_s(:argentina) %></strong>
-    <%= link_to 'prox', root_path(fecha: (@lunes + 1.week).to_s(:url)) %>
+  <div class="col-sm-4 col-sm-offset-4 text-center">
+    <%= link_to raw(icon('angle-left') + ' prev'), root_path(fecha: (@lunes - 1.week).to_s(:url)), class: 'btn btn-primary' %>
+    <%= @lunes.to_s(:argentina) %>
+    <%= link_to raw('prox ' + icon('angle-right')), root_path(fecha: (@lunes + 1.week).to_s(:url)), class: 'btn btn-primary' %>
+  </div>
+  <div clas="col-sm-4">
+    <span class="btn btn-lg btn-success pull-right" id="tarea-save-button"><%= icon('check-square') %> Guardado</span>
   </div>
 </div>
 <div class="row">

@@ -23,6 +23,7 @@ gem 'bootstrap-sass-rails'
 gem 'awesome_nested_fields'
 gem 'bootstrap-datepicker-rails'
 gem 'rails4-autocomplete'
+gem 'font-awesome-sass', '~> 4.3.0'
 
 # Usuarios
 gem 'devise'
